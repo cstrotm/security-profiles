@@ -1,0 +1,28 @@
+#+Title: Hardened Systemd Unit for BIND 9
+#+Date: <2021-10-16 Sat>
+#+Author: Carsten Strotmann
+
+* Debian 11
+ * This is an example of an hardened =systemd= unit file for BIND 9
+   under Debian 11
+   - This file has been tested under Debian 11.0 with BIND 9
+     9.16.15-Debian (Stable Release). The file might need to be
+     adjusted for newer versions of Debian or BIND 9.
+   - The resource constraints in this example are for a typical
+     enterprise or small/medium business DNS resolver or authoritative
+     server. For high volume ISP level resolver the number of tasks
+     and the memory constraints needs to be adjusted.
+   - Store this file into =/etc/systemd/system/bind9-hardened.service=
+   - Stop and disable the original unit
+     #+BEGIN_EXAMPLE
+     # systemctl stop bind9
+     # systemctl disable bind9
+     #+END_EXAMPLE
+   - Enable and start BIND 9 from the new unit file
+     #+BEGIN_EXAMPLE
+     # systemctl enable --now bind9-hardened
+     # systemctl status bind9-hardened
+     #+END_EXAMPLE
+   - If you run into issues with BIND 9, please verify the issue with
+     the original (un-hardened) unit-file first before opening a
+     ticket with Debian or ISC

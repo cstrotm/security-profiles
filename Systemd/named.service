@@ -1,0 +1,54 @@
+[Unit]
+Description=BIND Domain Name Server
+Documentation=man:named(8)
+After=network.target
+Wants=nss-lookup.target
+Before=nss-lookup.target
+
+[Service]
+EnvironmentFile=-/etc/default/named
+ExecStart=/usr/sbin/named -f $OPTIONS
+ExecReload=/usr/sbin/rndc reload
+ExecStop=/usr/sbin/rndc stop
+Restart=on-failure
+
+AppArmorProfile=named
+Personality=x86-64
+LockPersonality=yes
+UMask=077
+MemoryMax=2G
+TasksMax=20
+
+RestrictNamespaces=Yes
+RestrictRealtime=True
+MemoryDenyWriteExecute=True
+
+NoNewPrivileges=Yes
+PrivateDevices=Yes
+DevicePolicy=closed
+
+PrivateTmp=Yes
+PrivateMounts=Yes
+ProtectClock=Yes
+ProtectControlGroups=Yes
+ProtectHome=Yes
+ProtectKernelLogs=Yes
+ProtectKernelModules=Yes
+ProtectKernelTunables=Yes
+ProtectProc=invisible
+ProcSubset=pid
+ProtectSystem=Yes
+ProtectHostname=Yes
+
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6 AF_NETLINK
+
+SystemCallFilter=~@clock @debug @module @mount @raw-io @reboot @swap @cpu-emulation @obsolete
+
+CapabilityBoundingSet=~CAP_SETPCAP CAP_SYS_ADMIN CAP_SYS_PTRACE CAP_CHOWN CAP_FSETID CAP_SETFCAP CAP_(DAC_OVERWRITE CAP_FOWNER CAP_IPC_OWNER
+CapabilityBoundingSet=~CAP_SYS_MODULE CAP_SYS_RAWIO CAP_SYS_TIME CAP_AUDIT_CONTROL CAP_KILL CAP_MKNOD CAP_NET_BROADCAST CAP_NET_RAW
+CapabilityBoundingSet=~CAP_SYS_NICE CAP_MAC_ADMIN CAP_MAC_OVERRIDE CAP_BPF CAP_SYS_BOOT CAP_LINUX_IMMUTABLE CAP_IPC_LOCK
+CapabilityBoundingSet=~CAP_BLOCK_SUSPEND CAP_LEASE CAP_SYS_PACCT CAP_SYS_TTY_CONFIG CAP_WAKE_ALARM
+
+[Install]
+WantedBy=multi-user.target
+Alias=bind9.service

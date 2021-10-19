@@ -1,0 +1,5 @@
+This is an example of a Firejail profile for BIND 9 under Debian 11
+
+Store this file into =/etc/firejail/named.profile=
+
+If you run into issues with BIND 9, please verify the issue with Firejail disabled first before opening a ticket with Debian or ISC
