@@ -17,7 +17,7 @@ KillMode=process
 
 Personality=x86-64
 LockPersonality=yes
-SystemCallArchitectures=x86-64
+SystemCallArchitectures=native
 UMask=077
 MemoryMax=512M
 TasksMax=128
