@@ -35,17 +35,12 @@ DevicePolicy=closed
 PrivateTmp=Yes
 PrivateMounts=Yes
 PrivateUsers=Yes
-ProtectClock=Yes
 ProtectControlGroups=Yes
 ProtectHome=Yes
-ProtextSystem=Yes
 ProtectKernelLogs=Yes
 ProtectKernelModules=Yes
 ProtectKernelTunables=Yes
-ProtectProc=invisible
-ProcSubset=pid
 ProtectSystem=Yes
-ProtectHostname=Yes
 
 RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6 AF_NETLINK
 
