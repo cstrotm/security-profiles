@@ -1,0 +1,53 @@
+[Unit]
+Description=Berkeley Internet Name Domain (DNS)
+Wants=nss-lookup.target
+Wants=named-setup-rndc.service
+Before=nss-lookup.target
+After=named-setup-rndc.service
+After=network.target
+
+[Service]
+Type=forking
+Environment=NAMEDCONF=/etc/named.conf
+EnvironmentFile=-/etc/sysconfig/named
+Environment=KRB5_KTNAME=/etc/named.keytab
+PIDFile=/run/named/named.pid
+
+ExecStartPre=/bin/bash -c 'if [ ! "$DISABLE_ZONE_CHECKING" == "yes" ]; then /usr/sbin/named-checkconf -z "$NAMEDCONF"; else echo "Checking of zone files is disabled"; fi'
+ExecStart=/usr/sbin/named -u named -c ${NAMEDCONF} $OPTIONS
+ExecReload=/bin/sh -c 'if /usr/sbin/rndc null > /dev/null 2>&1; then /usr/sbin/rndc reload; else /bin/kill -HUP $MAINPID; fi'
+
+ExecStop=/bin/sh -c '/usr/sbin/rndc stop > /dev/null 2>&1 || /bin/kill -TERM $MAINPID'
+
+Personality=x86-64
+LockPersonality=yes
+UMask=077
+MemoryMax=2G
+TasksMax=20
+
+RestrictNamespaces=Yes
+RestrictRealtime=True
+MemoryDenyWriteExecute=True
+
+PrivateDevices=Yes
+DevicePolicy=closed
+
+PrivateTmp=Yes
+PrivateMounts=Yes
+ProtectControlGroups=Yes
+ProtectHome=Yes
+ProtectKernelModules=Yes
+ProtectKernelTunables=Yes
+ProtectSystem=Yes
+
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6 AF_NETLINK
+
+SystemCallFilter=~@clock @debug @module @mount @raw-io @reboot @swap @cpu-emulation @obsolete
+
+CapabilityBoundingSet=~CAP_SETPCAP CAP_SYS_ADMIN CAP_SYS_PTRACE CAP_CHOWN CAP_FSETID CAP_SETFCAP CAP_(DAC_OVERWRITE CAP_FOWNER CAP_IPC_OWNER
+CapabilityBoundingSet=~CAP_SYS_MODULE CAP_SYS_RAWIO CAP_SYS_TIME CAP_AUDIT_CONTROL CAP_KILL CAP_MKNOD CAP_NET_BROADCAST CAP_NET_RAW
+CapabilityBoundingSet=~CAP_SYS_NICE CAP_MAC_ADMIN CAP_MAC_OVERRIDE CAP_BPF CAP_SYS_BOOT CAP_LINUX_IMMUTABLE CAP_IPC_LOCK
+CapabilityBoundingSet=~CAP_BLOCK_SUSPEND CAP_LEASE CAP_SYS_PACCT CAP_SYS_TTY_CONFIG CAP_WAKE_ALARM
+
+[Install]
+WantedBy=multi-user.target
