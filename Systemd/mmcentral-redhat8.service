@@ -1,0 +1,56 @@
+[Unit]
+Description=Men & Mice Central service
+After=syslog.target network.target
+
+[Service]
+Type=forking
+PIDFile=/var/run/mmcentrald/mmcentrald.pid
+
+Environment=USER=root
+Environment=GROUP=root
+Environment=DATA=/var/mmsuite/mmcentral
+Environment=PORT=1231
+Environment=LOGLEVEL=3
+
+ExecStart=/usr/sbin/mmcentrald -u ${USER} -g ${GROUP} -d ${DATA} -ll${LOGLEVEL} -p ${PORT}
+KillMode=process
+
+Personality=x86-64
+LockPersonality=yes
+SystemCallArchitectures=x86-64
+UMask=077
+MemoryMax=512M
+TasksMax=128
+
+RestrictNamespaces=Yes
+RestrictRealtime=True
+MemoryDenyWriteExecute=True
+
+NoNewPrivileges=Yes
+PrivateDevices=Yes
+DevicePolicy=closed
+
+PrivateTmp=Yes
+PrivateMounts=Yes
+ProtectClock=Yes
+ProtectControlGroups=Yes
+ProtectHome=Yes
+ProtectKernelLogs=Yes
+ProtectKernelModules=Yes
+ProtectKernelTunables=Yes
+ProtectProc=invisible
+ProcSubset=pid
+ProtectSystem=Yes
+ProtectHostname=Yes
+
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6 AF_NETLINK
+
+SystemCallFilter=~@clock @debug @module @mount @raw-io @reboot @swap @cpu-emulation @obsolete
+
+CapabilityBoundingSet=~CAP_SETPCAP CAP_SYS_ADMIN CAP_SYS_PTRACE CAP_CHOWN CAP_FSETID CAP_SETFCAP CAP_(DAC_OVERWRITE CAP_FOWNER CAP_IPC_OWNER
+CapabilityBoundingSet=~CAP_SYS_MODULE CAP_SYS_RAWIO CAP_SYS_TIME CAP_AUDIT_CONTROL CAP_KILL CAP_MKNOD CAP_NET_BROADCAST CAP_NET_RAW
+CapabilityBoundingSet=~CAP_SYS_NICE CAP_MAC_ADMIN CAP_MAC_OVERRIDE CAP_BPF CAP_SYS_BOOT CAP_LINUX_IMMUTABLE CAP_IPC_LOCK
+CapabilityBoundingSet=~CAP_BLOCK_SUSPEND CAP_LEASE CAP_SYS_PACCT CAP_SYS_TTY_CONFIG CAP_WAKE_ALARM CAP_SYS_NICE CAP_SYS_RESOURCE
+
+[Install]
+WantedBy=multi-user.target
